@@ -1,0 +1,158 @@
+<html>
+    <head>
+        <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+
+        <title>
+            Order Page
+         </title>   
+    </head>
+    <body>
+        <form method = 'POST' id = 'insert'>
+
+            {% csrf_token %} 
+        
+                    <table>
+                        <tr>
+                        <td>    
+                        <h1>Person Detail</h1>
+                        </td>
+                        </tr>    
+                        
+                            <tr>
+                                <td>
+                                    <h3>First Name</h3>
+                                 </td>
+                                 <td>
+                                    <input type = 'text' id = 'firstname'>
+                                 </td>
+                                 <td>
+                                    <h3>Last Name</h3>
+                                 </td>
+                                 <td>
+                                 </td>
+                                 <td>
+                                    <input type = 'text' id = 'lastname'>
+                                 </td>
+            
+                            </tr> 
+                            
+                            <tr>
+                                <td>
+                                    <h3>Email</h3>
+                                 </td>
+                                 <td>
+                                    <input type = 'text' id = 'email'>
+                                 </td>
+                            </tr>
+            
+                            <tr>
+                                <td>    
+                                <h1>Address Detail</h1>
+                                </td>
+                            </tr> 
+                            
+                            <tr>
+                                <td>
+                                    <h3>Street</h3>
+                                 </td>
+                                 <td>
+                                    <input type = 'text' id = 'street'>
+                                 </td>
+                            </tr>
+            
+                            <tr>
+                                <td>
+                                    <h3>Landmark</h3>
+                                 </td>
+                                 <td>
+                                    <input type = 'text' id = 'landmark'>
+                                 </td>
+                            </tr>
+            
+                            <tr>
+                                <td>
+                                    <h3>Postal Code</h3>
+                                 </td>
+                                 <td>
+                                    <input type = 'text' id = 'postalcode'>
+                                 </td>
+                            </tr>
+            
+            
+                            <tr>
+                                <td>
+                                    <button type="submit">Submit</button>
+                                 </td>
+                                
+                                 </tr>
+                    </table>
+    </form>
+        <br><br><br><br>
+
+        <table border = '2' id = 'data_table'>
+                <tr align="center">
+                    <td>
+                        Name     
+                    </td>
+                    <td>
+                        Address
+                    </td>
+                    <td>
+                        Email
+                    </td>
+                </tr>
+                {% for data in order_data %}
+                <tr id='record'>
+                    <td>
+                        {{data.firstname}} &nbsp; {{data.lastname}}    
+                    </td>
+                    <td>
+                        {{data.address_street}} &nbsp;
+                        {{data.address_landmark}} &nbsp;
+                        {{data.address_pincode}}
+                    </td>
+                    <td>
+                        {{data.email}}
+                    </td>
+                </tr>
+                {% endfor %}
+        </table>
+
+
+        
+        
+    </body>
+    <script src="/static/js/jquery-2.2.4.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script>
+        $(document).on('submit', '#insert',function(e){
+            e.preventDefault();
+            $.ajax({
+                type:'POST',
+                url:'{% url "insert" %}',
+                data:{
+                    firstname:$('#firstname').val(),
+                    lastname:$('#lastname').val(),
+                    email:$('#email').val(),
+                    street:$('#street').val(),
+                    landmark:$('#landmark').val(),
+                    postalcode:$('#postalcode').val(),
+
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post'
+                },
+                
+                success:function(json){
+                    document.getElementById("insert").reset();
+                    alert("Data Uploaded Successfully");
+                }
+            });
+        });
+
+
+    </script>
+
+</html>
+
+
+            
