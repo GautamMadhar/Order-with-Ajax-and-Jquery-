@@ -92,27 +92,43 @@
         <table border = '2' id = 'data_table'>
                 <tr align="center">
                     <td>
-                        Name     
+                        First Name     
                     </td>
+                    <td>Last Name</td>
                     <td>
                         Address
                     </td>
+                    <td>Landmark</td>
+                    <td>Pincode</td>
                     <td>
                         Email
                     </td>
                 </tr>
                 {% for data in order_data %}
-                <tr id='record'>
-                    <td>
-                        {{data.firstname}} &nbsp; {{data.lastname}}    
+                <tr class='record'>
+                    <td class = "firstname">
+                        {{data.firstname}} 
                     </td>
-                    <td>
-                        {{data.address_street}} &nbsp;
-                        {{data.address_landmark}} &nbsp;
+                    <td class = "lastname">
+                        {{data.lastname}}    
+                    </td>
+                    <td class = "street">
+                        {{data.address_street}}
+                    </td>
+                    <td class = "landmark">                    
+                        {{data.address_landmark}}
+                    </td>
+                    <td class = "pincode">    
                         {{data.address_pincode}}
                     </td>
-                    <td>
+                    <td class = "email">
                         {{data.email}}
+                    </td>
+                    <td>
+                        <button data="{{data.id}}" class="edit">Edit</button>
+                    </td>
+                    <td>
+                        <button data="{{data.id}}" class="delete">Delete</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -125,12 +141,43 @@
     <script src="/static/js/jquery-2.2.4.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script>
+        let activeItem = null
+        function editItem(item){
+            var firstname = item.find('.firstname').text()
+            var lastname = item.find('.lastname').text()
+            var street = item.find('.street').text()
+            var landmark = item.find('.landmark').text()
+            var pincode = item.find('.pincode').text()
+            var email = item.find('.email').text()
+            var edit_id = item.find('.edit').attr('data')
+            $('#firstname').val(firstname)
+            $('#lastname').val(lastname)
+            $('#street').val(street)
+            $('#landmark').val(landmark)
+            $('#postalcode').val(pincode)
+            $('#email').val(email)
+            activeItem = edit_id
+        }
+
+        function deleteItem(delete_id){
+            $.ajax({
+                type:'GET',
+                url:"{% url 'delete' %}",
+                data:{
+                    'delete_id' : delete_id,
+
+                
+                }
+
+            })
+
+        }
+
+
         $(document).on('submit', '#insert',function(e){
             e.preventDefault();
-            $.ajax({
-                type:'POST',
-                url:'{% url "insert" %}',
-                data:{
+            url = '{% url "insert" %}';
+            data = {
                     firstname:$('#firstname').val(),
                     lastname:$('#lastname').val(),
                     email:$('#email').val(),
@@ -140,7 +187,17 @@
 
                     csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                     action: 'post'
-                },
+                }
+
+
+            if(activeItem != null){
+                url = '{% url "update" %}';
+                data['edit_id'] = activeItem
+            }
+            $.ajax({
+                type:'POST',
+                url:url,
+                data:data,
                 
                 success:function(json){
                     document.getElementById("insert").reset();
@@ -148,7 +205,18 @@
                 }
             });
         });
+        $('.edit').click(function(){
+            var item = $(this).closest('tr')
+            editItem(item)
 
+        })
+        $('.delete').click(function(){
+            var delete_id = $(this).attr('data')
+            console.log(delete_id)
+            deleteItem(delete_id)
+
+
+        })
 
     </script>
 

@@ -17,13 +17,14 @@ from django.contrib import admin
 from django.urls import path
 
 from Order import views
-from django.conf.urls import url
 
 app_name =  "Order"
 urlpatterns = [  
     path('admin/', admin.site.urls),
     path('',views.order_insert, name = 'insert'),
-    path('delete/<int:pk>',views.order_delete, name = 'delete'),
-    path('detail',views.order_detail, name = 'detail')
+    path('delete',views.order_delete, name = 'delete'),
+    path('detail',views.order_detail, name = 'detail'),
+    path('update',views.order_update, name = 'update')
+
 
 ]
